@@ -12,7 +12,7 @@ import com.makina.gpsdata.R;
 import com.makina.gpsdata.utils.FileManager;
 
 /**
- * This class returns the location given by the device's GPS and log it to a file
+ * This class returns the location given by the network and log it to a file
  * 
  * @author Guillaume Salmon
  *

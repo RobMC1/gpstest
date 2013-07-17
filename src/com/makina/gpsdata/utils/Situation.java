@@ -2,6 +2,13 @@ package com.makina.gpsdata.utils;
 
 import android.location.Location;
 
+/**
+ * A class to store a position and a speed
+ * 
+ * @author Guillaume Salmon
+ *
+ */
+
 public class Situation {
 	private Location mLocation;
 	private Speed mSpeed;

@@ -85,7 +85,12 @@ public abstract class TestActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	
+	/**
+	 * This function gets the current battery level
+	 * 
+	 * @return The current battery level between 0 and 1
+	 */
 	protected float getBatLvl() {
 		IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 		Intent batteryStatus = getApplicationContext().registerReceiver(null,
@@ -98,6 +103,12 @@ public abstract class TestActivity extends Activity {
 		return batteryPct;
 	}
 	
+	/**
+	 * Is called by the timer regularly and makes the data being wrote to file.
+	 * 
+	 * @author Guillaume Salmon
+	 *
+	 */
 	private class InfoUpdater extends TimerTask {
 		public void run() {
 			getInfo();
@@ -120,6 +131,10 @@ public abstract class TestActivity extends Activity {
 		super.onPause();
 	}
 	
+	/**
+	 * Stop the timer and stop the data from being wrote to the file.
+	 * Write final infos on file.
+	 */
 	protected void stopUpdates(){
 		mTimer.cancel();
 		try {
@@ -130,6 +145,10 @@ public abstract class TestActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * Start the timer and schedule the data updates.
+	 * Write general informations on file.
+	 */
 	protected void startUpdates(){
 		mTimer = new Timer();
 		TimerTask updateInfo = new InfoUpdater();
@@ -178,7 +197,15 @@ public abstract class TestActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * Collect info and write it to file
+	 */
 	protected abstract void getInfo();
 	
+	/**
+	 * Gets the type of the provider or sensor currently in use
+	 * 
+	 * @return The type of the sensor or provider as defined in FileManager.
+	 */
 	protected abstract int getType();
 }

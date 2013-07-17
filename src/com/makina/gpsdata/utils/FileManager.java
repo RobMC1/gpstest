@@ -8,7 +8,12 @@ import java.util.Calendar;
 
 import android.location.Location;
 
-
+/**
+ * Handles all the data formatting and writing to files. 
+ * 
+ * @author Guillaume Salmon
+ *
+ */
 public class FileManager {
 	
 	public static final int GPS_TYPE = 0;
@@ -25,12 +30,17 @@ public class FileManager {
 	private String mDirPath;
 	private String mDirName;
 
+	
 	public FileManager(String dirPath, String dirName) throws Exception {
 		mDirName = dirName;
 		mDirPath = dirPath;
 		createFiles();
 	}
 
+	/**
+	 * Creates the files for all types of data if they don't already exist.
+	 * @throws Exception
+	 */
 	private void createFiles () throws Exception{
 		
 		File dir = new File(mDirPath, mDirName);
@@ -75,6 +85,14 @@ public class FileManager {
 		}
 	}
 	
+	/**
+	 * Writes location data to file for gps and network location
+	 * 
+	 * @param type
+	 * @param loc
+	 * @return true if everything ran normally, false otherwise
+	 * @throws IOException
+	 */
 	public boolean writeDataToFile (int type, Location loc) throws IOException{
 		FileWriter fileWritter;
 		switch (type){
@@ -95,6 +113,14 @@ public class FileManager {
         return true;
 	}
 	
+	/**
+	 * Writes sensors data to file
+	 * 
+	 * @param type
+	 * @param valeurs
+	 * @return true if everything ran normally, false otherwise
+	 * @throws IOException
+	 */
 	public boolean writeDataToFile (int type, float [] valeurs) throws IOException{
 		FileWriter fileWritter;
 		switch (type){
@@ -118,6 +144,16 @@ public class FileManager {
         return true;
 	}
 	
+	/**
+	 * Writes general data at the beginning of every set of data
+	 * 
+	 * @param type
+	 * @param valeurs
+	 * @param brightness
+	 * @param batPerc
+	 * @return true if everything ran normally, false otherwise
+	 * @throws IOException
+	 */
 	public boolean writeDataToFile (int type, boolean valeurs[], int brightness, float batPerc) throws IOException{
 		FileWriter fileWritter;
 		String text = "\n\n\n*********************";
@@ -153,6 +189,14 @@ public class FileManager {
         return true;
 	}
 	
+	/**
+	 * Writes final data at the end of every set of data
+	 * 
+	 * @param type
+	 * @param batPerc
+	 * @return true if everything ran normally, false otherwise
+	 * @throws IOException
+	 */
 	public boolean writeDataToFile (int type, float batPerc) throws IOException{
 		FileWriter fileWritter;
 		String text = "\n\n*********************\n";
@@ -183,6 +227,12 @@ public class FileManager {
         return true;
 	}
 	
+	/**
+	 * Makes the data understandable before to write it on the file
+	 * 
+	 * @param loc
+	 * @return formatted data in a String
+	 */
 	private String formatData(Location loc){
 		String data = "";
 		if (loc!=null){
@@ -190,7 +240,12 @@ public class FileManager {
 		}
 		return data;
 	}
-	
+	/**
+	 * Makes the data understandable before to write it on the file
+	 * 
+	 * @param valeurs
+	 * @return formatted data in a String
+	 */
 	private String formatData(float [] valeurs){
 		String data = "";
 		if (valeurs!=null){
@@ -199,6 +254,12 @@ public class FileManager {
 		return data;
 	}
 	
+	/**
+	 * Makes the data understandable before to write it on the file
+	 * 
+	 * @param valeurs
+	 * @return formatted data in a String
+	 */
 	private String formatData(boolean [] valeurs){
 		String data = "";
 		if (valeurs!=null){
@@ -207,6 +268,11 @@ public class FileManager {
 		return data;
 	}
 	
+	/**
+	 * Delete the file containing the data for the specified type
+	 * 
+	 * @param type
+	 */
 	public void deleteFiles(int type){
 		switch (type){
 		case GPS_TYPE:

@@ -1,5 +1,11 @@
 package com.makina.gpsdata.utils;
 
+/**
+ * A simple class to gather data about speed
+ * 
+ * @author Guillaume Salmon
+ *
+ */
 public class Speed {
 	private float x;
 	private float y;

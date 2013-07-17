@@ -70,6 +70,9 @@ public abstract class LocationActivity extends TestActivity{
 		return super.onOptionsItemSelected(item);
 	}
 	
+	/**
+	 * Displays informations on screen about current values
+	 */
 	protected void displayInfos(){
 		mLocCount++;
 		((TextView) findViewById(R.id.gps_status)).setText("Attempt n° : "+mLocCount);
