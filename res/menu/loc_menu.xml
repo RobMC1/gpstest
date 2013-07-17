@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/gps_service"
+          android:showAsAction="always" 
+          android:title="@string/gps_service"/>
+    <item android:id="@+id/network_service"
+          android:showAsAction="always" 
+          android:title="@string/network_service"/>
+    <item android:id="@+id/sensor_service"
+          android:showAsAction="always" 
+          android:title="@string/sensor_service"/>
+    <item android:id="@+id/stop_service"
+          android:showAsAction="always" 
+          android:title="@string/stop_start"/>
+    <item android:id="@+id/clear_files"
+          android:icon="@android:drawable/ic_menu_delete"
+          android:showAsAction="never" 
+          android:title="@string/delete_file"/>
+</menu>
