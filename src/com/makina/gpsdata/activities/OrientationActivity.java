@@ -132,6 +132,13 @@ public class OrientationActivity extends TestSensorActivity implements SensorEve
 		    }
 		    
 		    
+		    //Ignore the acceleration due to gravity
+		    
+		    mAccVal[0] = mAccVal[0]-mGravVal[0];
+		    mAccVal[1] = mAccVal[1]-mGravVal[1];
+		    mAccVal[2] = mAccVal[2]-mGravVal[2];
+		    
+		    
 		    //Apply the rotation matrix to the acceleration values
 		    
 		    mAccRefT[0] = mAccVal[0]*mR[0] + mAccVal[1]*mR[1] + mAccVal[2]*mR[2];

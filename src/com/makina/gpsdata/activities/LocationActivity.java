@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,11 +53,17 @@ public abstract class LocationActivity extends TestActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
+		Intent i = getIntent();
+		
+		mIsUpdating = i.getBooleanExtra("isRunning", true);
+				
 		setContentView(R.layout.gps_layout);
 		mLocCount = 0;
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		
+		Log.e(getClass().getName(), "updating = "+mIsUpdating);
 	}
 
 	@Override
@@ -95,18 +102,21 @@ public abstract class LocationActivity extends TestActivity {
 			i = new Intent(getApplicationContext(), GPSActivity.class);
 			i.putExtra("dirName", mDirName);
 			i.putExtra("dirPath", mDirPath);
+			i.putExtra("isRunning", mIsUpdating);
 			startActivity(i);
 			break;
 		case R.id.network_service:
 			i = new Intent(getApplicationContext(), NetworkActivity.class);
 			i.putExtra("dirName", mDirName);
 			i.putExtra("dirPath", mDirPath);
+			i.putExtra("isRunning", mIsUpdating);
 			startActivity(i);
 			break;
 		case R.id.sensor_service:
 			i = new Intent(getApplicationContext(), SensorActivity.class);
 			i.putExtra("dirName", mDirName);
 			i.putExtra("dirPath", mDirPath);
+			i.putExtra("isRunning", mIsUpdating);
 			startActivity(i);
 			break;
 		}
@@ -120,6 +130,20 @@ public abstract class LocationActivity extends TestActivity {
 	}
 
 	@Override
+	protected void onResume() {
+		if (mIsUpdating){
+			startUpdates();
+		}
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+	}
+
+	@Override
 	protected void startUpdates() {
 		mLocations = new Position[TAB_LENGTH];
 		mLocCount = 0;
@@ -127,6 +151,7 @@ public abstract class LocationActivity extends TestActivity {
 		mTurn = 0;
 		mStartTime = SystemClock.uptimeMillis();
 		mPrevSit = new Situation(GPSData.getInstance().currentSituation);
+		mIsUpdating = true;
 		super.startUpdates();
 	}
 

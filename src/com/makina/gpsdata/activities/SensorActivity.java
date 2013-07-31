@@ -10,11 +10,11 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.widget.TextView;
 
 import com.makina.gpsdata.R;
 import com.makina.gpsdata.utils.FileManager;
 import com.makina.gpsdata.utils.Situation;
+import com.makina.gpsdata.utils.Speed;
 
 public class SensorActivity extends LocationActivity implements SensorEventListener {
 	
@@ -32,6 +32,7 @@ public class SensorActivity extends LocationActivity implements SensorEventListe
 	
     private float [] mAccRefT = new float [3];
 	private List<float []> mAccRefTvals = new ArrayList<float[]>();
+	private float [] mAcceleration = new float [3];
     
 	private boolean mIsReady;
 	
@@ -95,8 +96,22 @@ public class SensorActivity extends LocationActivity implements SensorEventListe
 	protected void getInfo() {
 		mPrevSit = new Situation(mSituation);
 		mSituation = new Situation();
-
+		computeMeanAcc();
+		double dist = getDist();
+		double bearing = getBearing();
+		computePosition(bearing, dist);
 	}
+	
+	private double getBearing() {
+		return Math.atan(mAcceleration[0]/mAcceleration[1])-(Math.PI/2);
+	}
+	
+	private double getDist() {
+		Speed s = new Speed(mSpeed.getX()+mAcceleration[0], mSpeed.getY()+mAcceleration[1], 0);
+		double dist = Math.sqrt(Math.pow(s.getX(), 2)+Math.pow(s.getY(), 2));
+		return dist;
+	}
+	
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		switch (event.sensor.getType()) {
@@ -125,6 +140,13 @@ public class SensorActivity extends LocationActivity implements SensorEventListe
 		    }
 		    
 		    
+		    //Ignore the acceleration due to gravity
+		    
+		    mAccVal[0] = mAccVal[0]-mGravVal[0];
+		    mAccVal[1] = mAccVal[1]-mGravVal[1];
+		    mAccVal[2] = mAccVal[2]-mGravVal[2];
+		    
+		    
 		    //Apply the rotation matrix to the acceleration values
 		    
 		    mAccRefT[0] = mAccVal[0]*mR[0] + mAccVal[1]*mR[1] + mAccVal[2]*mR[2];
@@ -147,11 +169,25 @@ public class SensorActivity extends LocationActivity implements SensorEventListe
 		}
 	}
 	
-	private void computePosition (){
-		double dist = 150000.0/6371000.0;
-		double brng = Math.toRadians(90);
-		double lat1 = Math.toRadians(26.88288045572338);
-		double lon1 = Math.toRadians(75.78369140625);
+	private void computeMeanAcc(){
+		mAcceleration[0] = 0;
+		mAcceleration[1] = 1;
+		mAcceleration[2] = 2;
+		for (float [] acc : mAccRefTvals){
+			for (int i =0; i<3; i++){
+				mAcceleration[i] = mAcceleration[i] + acc[i];
+			}
+		}
+		for (int i = 0; i<3; i++){
+			mAcceleration[i] = mAcceleration[i]/mAccRefTvals.size();
+		}
+		mAccRefTvals.clear();
+	}
+	
+	private void computePosition (double brng, double d){
+		double dist = d/6371000.0;
+		double lat1 = Math.toRadians(mPrevSit.getLatitude());
+		double lon1 = Math.toRadians(mPrevSit.getLongitude());
 
 		double lat2 = Math.asin( Math.sin(lat1)*Math.cos(dist) + Math.cos(lat1)*Math.sin(dist)*Math.cos(brng) );
 		double a = Math.atan2(Math.sin(brng)*Math.sin(dist)*Math.cos(lat1), Math.cos(dist)-Math.sin(lat1)*Math.sin(lat2));

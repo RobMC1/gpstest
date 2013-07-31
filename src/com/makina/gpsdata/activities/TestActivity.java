@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.provider.Settings.Secure;
 import android.provider.Settings.SettingNotFoundException;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -39,7 +40,6 @@ public abstract class TestActivity extends Activity {
 		Intent i = getIntent();
 		mDirName = (String) i.getCharSequenceExtra("dirName");
 		mDirPath = (String) i.getCharSequenceExtra("dirPath");
-		mIsUpdating = false;
 		
 		try {
 			mFileManager = new FileManager(mDirPath, mDirName);
@@ -48,6 +48,7 @@ public abstract class TestActivity extends Activity {
 					.show();
 			e.printStackTrace();
 		}
+		
 	}
 
 	@Override

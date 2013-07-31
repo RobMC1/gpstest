@@ -12,6 +12,7 @@ public class TestSensorActivity extends TestActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mIsUpdating = false;
 	}
 
 	@Override

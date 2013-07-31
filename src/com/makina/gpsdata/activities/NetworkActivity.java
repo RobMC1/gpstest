@@ -44,11 +44,11 @@ public class NetworkActivity extends LocationActivity implements LocationListene
 
 	@Override
 	public void onLocationChanged(Location location) {
-		GPSData.getInstance().currentSituation = new Situation(mSituation);
-		mPrevSit = mSituation;
+		mPrevSit = new Situation(GPSData.getInstance().currentSituation);
 		mSituation = new Situation(location);
 		computeSpeed();
 		getInfo();
+		GPSData.getInstance().currentSituation = new Situation(mSituation);
 	}
 
 	@Override

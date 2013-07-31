@@ -32,6 +32,7 @@ public class MainActivity extends Activity {
 				Intent i = new Intent(getApplicationContext(), GPSActivity.class);
 				i.putExtra("dirName", mDirName);
 				i.putExtra("dirPath", mDirPath);
+				i.putExtra("isRunning", false);
 				startActivity(i);
 			}
 		});
@@ -42,6 +43,7 @@ public class MainActivity extends Activity {
 				Intent i = new Intent(getApplicationContext(), NetworkActivity.class);
 				i.putExtra("dirName", mDirName);
 				i.putExtra("dirPath", mDirPath);
+				i.putExtra("isRunning", false);
 				startActivity(i);
 			}
 		});
@@ -85,7 +87,6 @@ public class MainActivity extends Activity {
 				startActivity(i);
 			}
 		});
-
 	}
 
 	@Override
