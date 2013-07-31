@@ -62,6 +62,14 @@
             android:name="com.makina.gpsdata.activities.GravityActivity"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name="com.makina.gpsdata.activities.OrientationActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.makina.gpsdata.activities.SensorActivity"
+            android:label="@string/app_name" >
+        </activity>
         <receiver android:name=".BatteryLevelReceiver">
 			<intent-filter>
 		  		<action android:name="android.intent.action.ACTION_BATTERY_LOW"/>

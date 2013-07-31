@@ -75,6 +75,16 @@ public class MainActivity extends Activity {
 				startActivity(i);
 			}
 		});
+		Button launchOrientation = (Button) findViewById(R.id.launch_orientation);
+		launchOrientation.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getApplicationContext(), OrientationActivity.class);
+				i.putExtra("dirName", mDirName);
+				i.putExtra("dirPath", mDirPath);
+				startActivity(i);
+			}
+		});
 
 	}
 

@@ -1,37 +1,37 @@
 package com.makina.gpsdata.utils;
 
 /**
- * A simple class to gather data about speed
+ * A simple class to gather data about speed. Unit is m/s.
  * 
  * @author Guillaume Salmon
  *
  */
 public class Speed {
-	private float x;
-	private float y;
-	private float z;
+	private double x;
+	private double y;
+	private double z;
 	public Speed (){
 		this.x = 0;
 		this.y = 0;
 		this.z = 0;
 	}
-	public Speed (float x, float y, float z){
+	public Speed (double x, double y, double z){
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
-	public void setSpeed (float x, float y, float z){
+	public void setSpeed (double x, double y, double z){
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
-	public float getX() {
+	public double getX() {
 		return x;
 	}
-	public float getY() {
+	public double getY() {
 		return y;
 	}
-	public float getZ() {
+	public double getZ() {
 		return z;
 	}
 }

@@ -19,7 +19,7 @@ import com.makina.gpsdata.utils.FileManager;
 * @author Guillaume Salmon
 *
 */
-public class GravityActivity extends TestActivity implements SensorEventListener{
+public class GravityActivity extends TestSensorActivity implements SensorEventListener{
 	
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
@@ -39,11 +39,6 @@ public class GravityActivity extends TestActivity implements SensorEventListener
 		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
 		
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
 	}
 
 	@Override
@@ -78,6 +73,7 @@ public class GravityActivity extends TestActivity implements SensorEventListener
 			Toast.makeText(this, "Failed to write on file", Toast.LENGTH_SHORT).show();
 			e.printStackTrace();
 		}
+		
 		mCount = 0;
 	}
 

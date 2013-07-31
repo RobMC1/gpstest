@@ -19,7 +19,8 @@ import com.makina.gpsdata.utils.FileManager;
  * @author Guillaume Salmon
  *
  */
-public class AccelerometerActivity extends TestActivity implements SensorEventListener{
+public class AccelerometerActivity extends TestSensorActivity implements SensorEventListener{
+	
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
 	private int mCount;
@@ -41,16 +42,6 @@ public class AccelerometerActivity extends TestActivity implements SensorEventLi
 	}
 
 	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-	
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
 	}
@@ -59,9 +50,9 @@ public class AccelerometerActivity extends TestActivity implements SensorEventLi
 	public void onSensorChanged(SensorEvent event) {
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 			mCount++;
-		    x = x+event.values[0];
-		    y = y+event.values[1];
-		    z = z+event.values[2];
+		    x = x + event.values[0];
+		    y = y + event.values[1];
+		    z = z + event.values[2];
 		    ((TextView)findViewById(R.id.sensor_x)).setText("x = "+event.values[0]);
 		    ((TextView)findViewById(R.id.sensor_y)).setText("y = "+event.values[1]);
 		    ((TextView)findViewById(R.id.sensor_z)).setText("z = "+event.values[2]);

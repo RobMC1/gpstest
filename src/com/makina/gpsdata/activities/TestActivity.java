@@ -1,8 +1,6 @@
 package com.makina.gpsdata.activities;
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -10,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -23,17 +22,16 @@ import com.makina.gpsdata.R;
 import com.makina.gpsdata.utils.FileManager;
 
 /**
- * This abstract class implements the methods which get the test values for the providers.
+ * This abstract class implements the methods which get the test values from the providers.
  * 
  * @author Guillaume Salmon
  * 
  */
 public abstract class TestActivity extends Activity {
 	protected FileManager mFileManager;
-	private Timer mTimer;
-	private boolean mIsUpdating;
 	protected String mDirName;
 	protected String mDirPath;
+	protected boolean mIsUpdating;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +40,7 @@ public abstract class TestActivity extends Activity {
 		mDirName = (String) i.getCharSequenceExtra("dirName");
 		mDirPath = (String) i.getCharSequenceExtra("dirPath");
 		mIsUpdating = false;
-
+		
 		try {
 			mFileManager = new FileManager(mDirPath, mDirName);
 		} catch (Exception e) {
@@ -71,7 +69,18 @@ public abstract class TestActivity extends Activity {
 			startActivity(i);
 			break;
 		case R.id.clear_files:
-			mFileManager.deleteFiles(FileManager.NETWORK_TYPE);
+			mFileManager.deleteFiles(getType());
+			break;
+		case R.id.view_files:
+			Intent intent = new Intent(Intent.ACTION_EDIT); 
+			intent.setDataAndType(Uri.parse
+			    ("file://"+mFileManager.getPath(getType())), "text/plain");
+			try {
+				startActivity(intent);
+			}catch (Exception e) {
+				Toast.makeText(this, "Unable to open file", Toast.LENGTH_SHORT).show();
+			}
+			
 			break;
 		case R.id.stop_service:
 			if (mIsUpdating){
@@ -85,7 +94,7 @@ public abstract class TestActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	/**
 	 * This function gets the current battery level
 	 * 
@@ -101,18 +110,6 @@ public abstract class TestActivity extends Activity {
 
 		float batteryPct = level / (float) scale;
 		return batteryPct;
-	}
-	
-	/**
-	 * Is called by the timer regularly and makes the data being wrote to file.
-	 * 
-	 * @author Guillaume Salmon
-	 *
-	 */
-	private class InfoUpdater extends TimerTask {
-		public void run() {
-			getInfo();
-		}
 	}
 	
 	@Override
@@ -136,7 +133,6 @@ public abstract class TestActivity extends Activity {
 	 * Write final infos on file.
 	 */
 	protected void stopUpdates(){
-		mTimer.cancel();
 		try {
 			mFileManager.writeDataToFile (getType(), getBatLvl());
 		} catch (IOException e) {
@@ -150,9 +146,6 @@ public abstract class TestActivity extends Activity {
 	 * Write general informations on file.
 	 */
 	protected void startUpdates(){
-		mTimer = new Timer();
-		TimerTask updateInfo = new InfoUpdater();
-		mTimer.scheduleAtFixedRate(updateInfo, 1000, 1000);
 		
 		// Find general informations and add it to file : 
 		ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);

@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.makina.gpsdata.R;
+import com.makina.gpsdata.application.GPSData;
 import com.makina.gpsdata.utils.FileManager;
+import com.makina.gpsdata.utils.Situation;
 
 /**
  * This class returns the location given by the device's GPS and log it to a file
@@ -19,13 +21,12 @@ import com.makina.gpsdata.utils.FileManager;
  *
  */
 public class GPSActivity extends LocationActivity implements LocationListener {
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.gps_layout);
-		mLocCount = 0;
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		List<String> providers = mLocationManager.getProviders(true);
@@ -48,13 +49,11 @@ public class GPSActivity extends LocationActivity implements LocationListener {
 
 	@Override
 	public void onLocationChanged(Location location) {
-		mLocation = location;
-		mLocCount++;
-		((TextView) findViewById(R.id.gps_status)).setText("Attempt n° : "+mLocCount);
-		((TextView) findViewById(R.id.gps_lat)).setText("Latitude : "+location.getLatitude());
-		((TextView) findViewById(R.id.gps_long)).setText("Longitude : "+location.getLongitude());
-		((TextView) findViewById(R.id.gps_acc)).setText("Précision : "+location.getAccuracy());
-		((TextView) findViewById(R.id.gps_alt)).setText("Altitude : "+location.getAltitude());
+		GPSData.getInstance().currentSituation = new Situation(mSituation);
+		mPrevSit = mSituation;
+		mSituation = new Situation(location);
+		computeSpeed();
+		getInfo();
 	}
 
 	@Override

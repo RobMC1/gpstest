@@ -6,85 +6,113 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
 
-import android.location.Location;
-
 /**
- * Handles all the data formatting and writing to files. 
+ * Handles all the data formatting and writing to files.
  * 
  * @author Guillaume Salmon
- *
+ * 
  */
 public class FileManager {
-	
+
 	public static final int GPS_TYPE = 0;
 	public static final int NETWORK_TYPE = 1;
 	public static final int GYRO_TYPE = 2;
 	public static final int ACC_TYPE = 3;
 	public static final int GRAVITY_TYPE = 4;
-	
+	public static final int SENSOR_TYPE = 5;
+	public static final int ORIENTATION_TYPE = 6;
+
 	private File mGPSout;
 	private File mNetworkOut;
 	private File mGyroOut;
 	private File mAccOut;
 	private File mGravityOut;
+	private File mSensorOut;
+	private File mOrientationOut;
 	private String mDirPath;
 	private String mDirName;
 
-	
 	public FileManager(String dirPath, String dirName) throws Exception {
 		mDirName = dirName;
 		mDirPath = dirPath;
 		createFiles();
 	}
 
+	public String getPath(int type) {
+		switch (type) {
+		case GPS_TYPE:
+			return mGPSout.getAbsolutePath();
+		case NETWORK_TYPE:
+			return mNetworkOut.getAbsolutePath();
+		case GYRO_TYPE:
+			return mGyroOut.getAbsolutePath();
+		case ACC_TYPE:
+			return mAccOut.getAbsolutePath();
+		case GRAVITY_TYPE:
+			return mGravityOut.getAbsolutePath();
+		case SENSOR_TYPE:
+			return mSensorOut.getAbsolutePath();
+		case ORIENTATION_TYPE:
+			return mOrientationOut.getAbsolutePath();
+		default:
+			return null;
+		}
+	}
+
 	/**
 	 * Creates the files for all types of data if they don't already exist.
+	 * 
 	 * @throws Exception
 	 */
-	private void createFiles () throws Exception{
-		
+	private void createFiles() throws Exception {
+
 		File dir = new File(mDirPath, mDirName);
-        if (!dir.exists()) {
-            if (!dir.mkdirs()) {
-                RuntimeException e =
-                        new RuntimeException("Cannot create directory: "
-                                + mDirName);
-                throw e;
-            }
-        } else {
-            if (!dir.isDirectory()) {
-                RuntimeException e =
-                        new RuntimeException(mDirName
-                                + " exists, but is not a directory");
-                throw e;
-            }
-        }
-        mDirPath = dir.getAbsolutePath();
-		
+		if (!dir.exists()) {
+			if (!dir.mkdirs()) {
+				RuntimeException e = new RuntimeException(
+						"Cannot create directory: " + mDirName);
+				throw e;
+			}
+		} else {
+			if (!dir.isDirectory()) {
+				RuntimeException e = new RuntimeException(mDirName
+						+ " exists, but is not a directory");
+				throw e;
+			}
+		}
+		mDirPath = dir.getAbsolutePath();
+
 		mGPSout = new File(mDirPath, "GPSOutput.txt");
 		mNetworkOut = new File(mDirPath, "NetworkOutput.txt");
 		mGyroOut = new File(mDirPath, "GyroOutput.txt");
 		mAccOut = new File(mDirPath, "AccOutput.txt");
 		mGravityOut = new File(mDirPath, "GravityOutput.txt");
-		
-		
-		if(!mGPSout.exists()){
+		mSensorOut = new File(mDirPath, "SensorOutput.txt");
+		mOrientationOut = new File(mDirPath, "OrientationOutput.txt");
+
+		if (!mGPSout.exists()) {
 			mGPSout.createNewFile();
 		}
-		if(!mNetworkOut.exists()){
+		if (!mNetworkOut.exists()) {
 			mNetworkOut.createNewFile();
 		}
-		if(!mGyroOut.exists()){
+		if (!mGyroOut.exists()) {
 			mGyroOut.createNewFile();
 		}
-		if(!mAccOut.exists()){
+		if (!mAccOut.exists()) {
 			mAccOut.createNewFile();
 		}
-		if(!mGravityOut.exists()){
+		if (!mGravityOut.exists()) {
 			mGravityOut.createNewFile();
 		}
+		if (!mSensorOut.exists()) {
+			mSensorOut.createNewFile();
+		}
+		if (!mOrientationOut.exists()) {
+			mOrientationOut.createNewFile();
+		}
 	}
-	
+
 	/**
 	 * Writes location data to file for gps and network location
 	 * 
@@ -93,26 +121,31 @@ public class FileManager {
 	 * @return true if everything ran normally, false otherwise
 	 * @throws IOException
 	 */
-	public boolean writeDataToFile (int type, Location loc) throws IOException{
+	public boolean writeDataToFile(int type, Situation loc, Long elpasedTime)
+			throws IOException {
 		FileWriter fileWritter;
-		switch (type){
+		switch (type) {
 		case GPS_TYPE:
-			fileWritter = new FileWriter(mGPSout.getAbsolutePath(),true);
+			fileWritter = new FileWriter(mGPSout.getAbsolutePath(), true);
 			break;
 		case NETWORK_TYPE:
-			fileWritter = new FileWriter(mNetworkOut.getAbsolutePath(),true);
+			fileWritter = new FileWriter(mNetworkOut.getAbsolutePath(), true);
+			break;
+		case SENSOR_TYPE:
+			fileWritter = new FileWriter(mSensorOut.getAbsolutePath(), true);
 			break;
 		default:
 			return false;
 		}
 		String text = "\n\n";
-		text = text+Calendar.getInstance().getTime().toString()+"\n"+formatData(loc);
-        BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
-        bufferWritter.write(text);
-        bufferWritter.close();
-        return true;
+		text = text + Calendar.getInstance().getTime().toString() + "\n"
+				+ formatData(loc) + "\n Temps écoulé : " + elpasedTime + " ms";
+		BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+		bufferWritter.write(text);
+		bufferWritter.close();
+		return true;
 	}
-	
+
 	/**
 	 * Writes sensors data to file
 	 * 
@@ -121,29 +154,35 @@ public class FileManager {
 	 * @return true if everything ran normally, false otherwise
 	 * @throws IOException
 	 */
-	public boolean writeDataToFile (int type, float [] valeurs) throws IOException{
+	public boolean writeDataToFile(int type, float[] valeurs)
+			throws IOException {
 		FileWriter fileWritter;
-		switch (type){
+		switch (type) {
 		case GYRO_TYPE:
-			fileWritter = new FileWriter(mGyroOut.getAbsolutePath(),true);
+			fileWritter = new FileWriter(mGyroOut.getAbsolutePath(), true);
 			break;
 		case ACC_TYPE:
-			fileWritter = new FileWriter(mAccOut.getAbsolutePath(),true);
+			fileWritter = new FileWriter(mAccOut.getAbsolutePath(), true);
 			break;
 		case GRAVITY_TYPE:
-			fileWritter = new FileWriter(mGravityOut.getAbsolutePath(),true);
+			fileWritter = new FileWriter(mGravityOut.getAbsolutePath(), true);
+			break;
+		case ORIENTATION_TYPE:
+			fileWritter = new FileWriter(mOrientationOut.getAbsolutePath(),
+					true);
 			break;
 		default:
 			return false;
 		}
 		String text = "\n\n";
-		text = text+Calendar.getInstance().getTime().toString()+"\n"+formatData(valeurs);
-        BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
-        bufferWritter.write(text);
-        bufferWritter.close();
-        return true;
+		text = text + Calendar.getInstance().getTime().toString() + "\n"
+				+ formatData(valeurs);
+		BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+		bufferWritter.write(text);
+		bufferWritter.close();
+		return true;
 	}
-	
+
 	/**
 	 * Writes general data at the beginning of every set of data
 	 * 
@@ -154,41 +193,85 @@ public class FileManager {
 	 * @return true if everything ran normally, false otherwise
 	 * @throws IOException
 	 */
-	public boolean writeDataToFile (int type, boolean valeurs[], int brightness, float batPerc) throws IOException{
+	public boolean writeDataToFile(int type, boolean valeurs[], int brightness,
+			float batPerc) throws IOException {
 		FileWriter fileWritter;
 		String text = "\n\n\n*********************";
-		switch (type){
+		switch (type) {
 		case GYRO_TYPE:
-			text = text+"\nGyroscope : ";
-			fileWritter = new FileWriter(mGyroOut.getAbsolutePath(),true);
+			text = text + "\nGyroscope : ";
+			fileWritter = new FileWriter(mGyroOut.getAbsolutePath(), true);
 			break;
 		case ACC_TYPE:
-			text = text+"\nAccéléromètre : ";
-			fileWritter = new FileWriter(mAccOut.getAbsolutePath(),true);
+			text = text + "\nAccéléromètre : ";
+			fileWritter = new FileWriter(mAccOut.getAbsolutePath(), true);
 			break;
 		case GRAVITY_TYPE:
-			text = text+"\nGravité : ";
-			fileWritter = new FileWriter(mGravityOut.getAbsolutePath(),true);
+			text = text + "\nGravité : ";
+			fileWritter = new FileWriter(mGravityOut.getAbsolutePath(), true);
 			break;
 		case GPS_TYPE:
-			text = text+"\nGPS : ";
-			fileWritter = new FileWriter(mGPSout.getAbsolutePath(),true);
+			text = text + "\nGPS : ";
+			fileWritter = new FileWriter(mGPSout.getAbsolutePath(), true);
 			break;
 		case NETWORK_TYPE:
-			text = text+"\nNetwork : ";
-			fileWritter = new FileWriter(mNetworkOut.getAbsolutePath(),true);
+			text = text + "\nNetwork : ";
+			fileWritter = new FileWriter(mNetworkOut.getAbsolutePath(), true);
+			break;
+		case SENSOR_TYPE:
+			text = text + "\nSensors location : ";
+			fileWritter = new FileWriter(mSensorOut.getAbsolutePath(), true);
+			break;
+		case ORIENTATION_TYPE:
+			text = text + "\nOrientation : ";
+			fileWritter = new FileWriter(mOrientationOut.getAbsolutePath(),
+					true);
 			break;
 		default:
 			return false;
 		}
-		text = text+Calendar.getInstance().getTime().toString()+"\n"+formatData(valeurs)+"\nLuminosité de l'écran : "+brightness+"\nPourcentage Batterie : "+(batPerc*100)+"%";
-		text = text+"\n*********************";
+		text = text + Calendar.getInstance().getTime().toString() + "\n"
+				+ formatData(valeurs) + "\nLuminosité de l'écran : "
+				+ brightness + "\nPourcentage Batterie : " + (batPerc * 100)
+				+ "%";
+		text = text + "\n*********************";
 		BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
-        bufferWritter.write(text);
-        bufferWritter.close();
-        return true;
+		bufferWritter.write(text);
+		bufferWritter.close();
+		return true;
 	}
-	
+
+	public boolean writeDataToFile(int type, double meanLat, double meanLong,
+			float meanAcc, boolean isValid) throws IOException {
+		FileWriter fileWritter;
+		String text = "\n\n";
+		switch (type) {
+		case GPS_TYPE:
+			fileWritter = new FileWriter(mGPSout.getAbsolutePath(), true);
+			break;
+		case NETWORK_TYPE:
+			fileWritter = new FileWriter(mNetworkOut.getAbsolutePath(), true);
+			break;
+		case SENSOR_TYPE:
+			fileWritter = new FileWriter(mSensorOut.getAbsolutePath(), true);
+			break;
+		case ORIENTATION_TYPE:
+			fileWritter = new FileWriter(mOrientationOut.getAbsolutePath(),
+					true);
+			break;
+		default:
+			return false;
+		}
+		text = text + Calendar.getInstance().getTime().toString()
+				+ "\nLatitude moyenne : " + meanLat + "\nLongitude moyenne : "
+				+ meanLong + "\nPrécision moyenne : " + meanAcc
+				+ "\nValeur suivante valide : " + isValid;
+		BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+		bufferWritter.write(text);
+		bufferWritter.close();
+		return true;
+	}
+
 	/**
 	 * Writes final data at the end of every set of data
 	 * 
@@ -197,84 +280,97 @@ public class FileManager {
 	 * @return true if everything ran normally, false otherwise
 	 * @throws IOException
 	 */
-	public boolean writeDataToFile (int type, float batPerc) throws IOException{
+	public boolean writeDataToFile(int type, float batPerc) throws IOException {
 		FileWriter fileWritter;
 		String text = "\n\n*********************\n";
-		switch (type){
+		switch (type) {
 		case GYRO_TYPE:
-			fileWritter = new FileWriter(mGyroOut.getAbsolutePath(),true);
+			fileWritter = new FileWriter(mGyroOut.getAbsolutePath(), true);
 			break;
 		case ACC_TYPE:
-			fileWritter = new FileWriter(mAccOut.getAbsolutePath(),true);
+			fileWritter = new FileWriter(mAccOut.getAbsolutePath(), true);
 			break;
 		case GRAVITY_TYPE:
-			fileWritter = new FileWriter(mGravityOut.getAbsolutePath(),true);
+			fileWritter = new FileWriter(mGravityOut.getAbsolutePath(), true);
 			break;
 		case GPS_TYPE:
-			fileWritter = new FileWriter(mGPSout.getAbsolutePath(),true);
+			fileWritter = new FileWriter(mGPSout.getAbsolutePath(), true);
 			break;
 		case NETWORK_TYPE:
-			fileWritter = new FileWriter(mNetworkOut.getAbsolutePath(),true);
+			fileWritter = new FileWriter(mNetworkOut.getAbsolutePath(), true);
+			break;
+		case SENSOR_TYPE:
+			fileWritter = new FileWriter(mSensorOut.getAbsolutePath(), true);
+			break;
+		case ORIENTATION_TYPE:
+			fileWritter = new FileWriter(mOrientationOut.getAbsolutePath(),
+					true);
 			break;
 		default:
 			return false;
 		}
-		text = text+Calendar.getInstance().getTime().toString()+"\nPourcentage Batterie : "+(batPerc*100)+"%";
-		text = text+"\n*********************\n*********************\n";
+		text = text + Calendar.getInstance().getTime().toString()
+				+ "\nPourcentage Batterie : " + (batPerc * 100) + "%";
+		text = text + "\n*********************\n*********************\n";
 		BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
-        bufferWritter.write(text);
-        bufferWritter.close();
-        return true;
+		bufferWritter.write(text);
+		bufferWritter.close();
+		return true;
 	}
-	
+
 	/**
 	 * Makes the data understandable before to write it on the file
 	 * 
 	 * @param loc
 	 * @return formatted data in a String
 	 */
-	private String formatData(Location loc){
+	private String formatData(Situation loc) {
 		String data = "";
-		if (loc!=null){
-			data = "Latitude : "+loc.getLatitude()+"\nLongitude : "+loc.getLongitude()+"\nPrécision : "+loc.getAccuracy()+"\nAltitude : "+loc.getAltitude();
+		if (loc != null) {
+			data = "Latitude : " + loc.getLatitude() + "\nLongitude : "
+					+ loc.getLongitude() + "\nPrécision : " + loc.getAccuracy();
 		}
 		return data;
 	}
+
 	/**
 	 * Makes the data understandable before to write it on the file
 	 * 
 	 * @param valeurs
 	 * @return formatted data in a String
 	 */
-	private String formatData(float [] valeurs){
+	private String formatData(float[] valeurs) {
 		String data = "";
-		if (valeurs!=null){
-			data = "x : "+valeurs[0]+"\ny : "+valeurs[1]+"\nz : "+valeurs[2]+"\nEchantillon de "+valeurs[3]+" valeurs\nConsommation : "+valeurs[4]+"mA";
+		if (valeurs != null) {
+			data = "x : " + valeurs[0] + "\ny : " + valeurs[1] + "\nz : "
+					+ valeurs[2] + "\nEchantillon de " + valeurs[3]
+					+ " valeurs\nConsommation : " + valeurs[4] + "mA";
 		}
 		return data;
 	}
-	
+
 	/**
 	 * Makes the data understandable before to write it on the file
 	 * 
 	 * @param valeurs
 	 * @return formatted data in a String
 	 */
-	private String formatData(boolean [] valeurs){
+	private String formatData(boolean[] valeurs) {
 		String data = "";
-		if (valeurs!=null){
-			data = "Wifi activé : "+valeurs[0]+"\nData activée : "+valeurs[1]+"\nGSM activé : "+valeurs[2];
+		if (valeurs != null) {
+			data = "Wifi activé : " + valeurs[0] + "\nData activée : "
+					+ valeurs[1] + "\nGSM activé : " + valeurs[2];
 		}
 		return data;
 	}
-	
+
 	/**
 	 * Delete the file containing the data for the specified type
 	 * 
 	 * @param type
 	 */
-	public void deleteFiles(int type){
-		switch (type){
+	public void deleteFiles(int type) {
+		switch (type) {
 		case GPS_TYPE:
 			mGPSout.delete();
 			break;
@@ -289,6 +385,12 @@ public class FileManager {
 			break;
 		case GRAVITY_TYPE:
 			mGravityOut.delete();
+			break;
+		case SENSOR_TYPE:
+			mSensorOut.delete();
+			break;
+		case ORIENTATION_TYPE:
+			mOrientationOut.delete();
 			break;
 		}
 	}

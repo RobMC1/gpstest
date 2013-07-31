@@ -9,7 +9,9 @@
     <string name="test_gyro">Test Gyroscope</string>
     <string name="test_acc">Test Accelerometre</string>
     <string name="test_gravity">Test Gravité</string>
+    <string name="test_orientation">Test Orientation</string>
     <string name="delete_file">Effacer les fichiers</string>
+    <string name="view_file">Consulter le fichier</string>
     <string name="stop_start">Arreter/Relancer le service</string>
     <string name="sensor_service">Sensor</string>
     <string name="network_service">Network</string>

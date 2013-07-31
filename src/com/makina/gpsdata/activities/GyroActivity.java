@@ -19,7 +19,7 @@ import com.makina.gpsdata.utils.FileManager;
 * @author Guillaume Salmon
 *
 */
-public class GyroActivity extends TestActivity implements SensorEventListener{
+public class GyroActivity extends TestSensorActivity implements SensorEventListener{
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
 	private int mCount;

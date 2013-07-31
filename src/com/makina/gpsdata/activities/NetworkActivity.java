@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.makina.gpsdata.R;
+import com.makina.gpsdata.application.GPSData;
 import com.makina.gpsdata.utils.FileManager;
+import com.makina.gpsdata.utils.Situation;
 
 /**
  * This class returns the location given by the network and log it to a file
@@ -42,8 +44,10 @@ public class NetworkActivity extends LocationActivity implements LocationListene
 
 	@Override
 	public void onLocationChanged(Location location) {
-		mLocation = location;
-		displayInfos();
+		GPSData.getInstance().currentSituation = new Situation(mSituation);
+		mPrevSit = mSituation;
+		mSituation = new Situation(location);
+		computeSpeed();
 		getInfo();
 	}
 

@@ -1,39 +1,76 @@
 package com.makina.gpsdata.utils;
 
 import android.location.Location;
+import android.os.SystemClock;
 
 /**
- * A class to store a position and a speed
+ * Gives the latitude, longitude and speed at a given time.
  * 
  * @author Guillaume Salmon
  *
  */
 
 public class Situation {
-	private Location mLocation;
+	private double mLatitude;
+	private double mLongitude;
+	private Long mTime;
 	private Speed mSpeed;
+	private float mAccuracy;
 	
-	public Situation (Location l, float x, float y, float z){
-		mLocation = new Location(l);
-		mSpeed = new Speed(x, y, z);
+	public Situation (Location l, Speed s){
+		mLatitude = l.getLatitude();
+		mLongitude = l.getLongitude();
+		mAccuracy = l.getAccuracy();
+		mSpeed = s;
+		setTime();
 	}
 	
 	public Situation (){
-		mLocation = null;
+		mLatitude = 0;
+		mLongitude = 0;
+		mAccuracy = 0;
 		mSpeed = new Speed();
+		setTime();
 	}
 	
+	public Situation (Situation s){
+		mLatitude = s.getLatitude();
+		mLongitude = s.getLongitude();
+		mAccuracy = s.getAccuracy();
+		mSpeed = s.getSpeed();
+		mTime = s.getTime();
+	}
+
 	public Situation (Location l){
-		mLocation = new Location(l);
+		mLatitude = l.getLatitude();
+		mLongitude = l.getLongitude();
+		mAccuracy = l.getAccuracy();
 		mSpeed = new Speed();
+		setTime();
 	}
 
-	public Location getLocation() {
-		return mLocation;
+	public double getLatitude() {
+		return mLatitude;
 	}
 
-	public void setLocation(Location location) {
-		this.mLocation = location;
+	public void setLatitude(double latitude) {
+		this.mLatitude = latitude;
+	}
+
+	public double getLongitude() {
+		return mLongitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.mLongitude = longitude;
+	}
+
+	public Long getTime() {
+		return mTime;
+	}
+
+	private void setTime() {
+		this.mTime = SystemClock.elapsedRealtime();
 	}
 
 	public Speed getSpeed() {
@@ -42,5 +79,13 @@ public class Situation {
 
 	public void setSpeed(Speed speed) {
 		this.mSpeed = speed;
+	}
+	
+	public float getAccuracy() {
+		return mAccuracy;
+	}
+	
+	public void setAccuracy(float acc) {
+		this.mAccuracy = acc;
 	}
 }
