@@ -21,13 +21,12 @@ import com.makina.gpsdata.utils.Situation;
  *
  */
 public class GPSActivity extends LocationActivity implements LocationListener {
+	protected LocationManager mLocationManager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		setContentView(R.layout.gps_layout);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+
 		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		List<String> providers = mLocationManager.getProviders(true);
 		for (String provider : providers){
@@ -49,11 +48,13 @@ public class GPSActivity extends LocationActivity implements LocationListener {
 
 	@Override
 	public void onLocationChanged(Location location) {
-		GPSData.getInstance().currentSituation = new Situation(mSituation);
-		mPrevSit = mSituation;
+		mPrevSit = new Situation(GPSData.getInstance().currentSituation);
 		mSituation = new Situation(location);
 		computeSpeed();
+		getMean();
 		getInfo();
+		displayInfos();
+		GPSData.getInstance().currentSituation = new Situation(mSituation);
 	}
 
 	@Override

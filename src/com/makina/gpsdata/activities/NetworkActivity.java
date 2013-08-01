@@ -2,6 +2,7 @@ package com.makina.gpsdata.activities;
 
 import java.util.List;
 
+import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,17 +21,20 @@ import com.makina.gpsdata.utils.Situation;
  *
  */
 public class NetworkActivity extends LocationActivity implements LocationListener {	
-
+	protected LocationManager mLocationManager;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
+		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		List<String> providers = mLocationManager.getProviders(true);
 		for (String provider : providers){
 			if (provider.equalsIgnoreCase(LocationManager.NETWORK_PROVIDER)) {
 	            mIsOn = true;
 	        }
 		}
+
 	}
 	@Override
 	protected void onPause() {
@@ -47,7 +51,9 @@ public class NetworkActivity extends LocationActivity implements LocationListene
 		mPrevSit = new Situation(GPSData.getInstance().currentSituation);
 		mSituation = new Situation(location);
 		computeSpeed();
+		getMean();
 		getInfo();
+		displayInfos();
 		GPSData.getInstance().currentSituation = new Situation(mSituation);
 	}
 

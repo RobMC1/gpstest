@@ -12,6 +12,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import com.makina.gpsdata.R;
+import com.makina.gpsdata.application.GPSData;
 import com.makina.gpsdata.utils.FileManager;
 import com.makina.gpsdata.utils.Situation;
 import com.makina.gpsdata.utils.Speed;
@@ -94,12 +95,14 @@ public class SensorActivity extends LocationActivity implements SensorEventListe
 	
 	@Override
 	protected void getInfo() {
-		mPrevSit = new Situation(mSituation);
+		mPrevSit = new Situation(GPSData.getInstance().currentSituation);
 		mSituation = new Situation();
 		computeMeanAcc();
 		double dist = getDist();
 		double bearing = getBearing();
 		computePosition(bearing, dist);
+		GPSData.getInstance().currentSituation = new Situation(mSituation);
+		super.getInfo();
 	}
 	
 	private double getBearing() {
@@ -107,7 +110,7 @@ public class SensorActivity extends LocationActivity implements SensorEventListe
 	}
 	
 	private double getDist() {
-		Speed s = new Speed(mSpeed.getX()+mAcceleration[0], mSpeed.getY()+mAcceleration[1], 0);
+		Speed s = new Speed(mPrevSit.getSpeed().getX()+mAcceleration[0], mPrevSit.getSpeed().getY()+mAcceleration[1], 0);
 		double dist = Math.sqrt(Math.pow(s.getX(), 2)+Math.pow(s.getY(), 2));
 		return dist;
 	}
@@ -154,6 +157,9 @@ public class SensorActivity extends LocationActivity implements SensorEventListe
 		    mAccRefT[2] = mAccVal[0]*mR[6] + mAccVal[1]*mR[7] + mAccVal[2]*mR[8];
 		    
 		    mAccRefTvals.add(mAccRefT);
+		    
+
+			displayInfos();
 	    }
 	}
 	
@@ -189,13 +195,13 @@ public class SensorActivity extends LocationActivity implements SensorEventListe
 		double lat1 = Math.toRadians(mPrevSit.getLatitude());
 		double lon1 = Math.toRadians(mPrevSit.getLongitude());
 
-		double lat2 = Math.asin( Math.sin(lat1)*Math.cos(dist) + Math.cos(lat1)*Math.sin(dist)*Math.cos(brng) );
-		double a = Math.atan2(Math.sin(brng)*Math.sin(dist)*Math.cos(lat1), Math.cos(dist)-Math.sin(lat1)*Math.sin(lat2));
+		mSituation.setLatitude(Math.asin( Math.sin(lat1)*Math.cos(dist) + Math.cos(lat1)*Math.sin(dist)*Math.cos(brng) ));
+		double a = Math.atan2(Math.sin(brng)*Math.sin(dist)*Math.cos(lat1), Math.cos(dist)-Math.sin(lat1)*Math.sin(mSituation.getLatitude()));
 		System.out.println("a = " +  a);
 		double lon2 = lon1 + a;
 
-		lon2 = (lon2+ 3*Math.PI) % (2*Math.PI) - Math.PI;
+		mSituation.setLongitude((lon2+ 3*Math.PI) % (2*Math.PI) - Math.PI);
 
-		System.out.println("Latitude = "+Math.toDegrees(lat2)+"\nLongitude = "+Math.toDegrees(lon2));
+		System.out.println("Latitude = "+Math.toDegrees(mSituation.getLatitude())+"\nLongitude = "+Math.toDegrees(mSituation.getLongitude()));
 	}
 }

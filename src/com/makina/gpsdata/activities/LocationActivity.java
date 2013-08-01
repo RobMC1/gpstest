@@ -2,9 +2,7 @@ package com.makina.gpsdata.activities;
 
 import java.io.IOException;
 
-import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -21,9 +19,7 @@ public abstract class LocationActivity extends TestActivity {
 
 	private final int TAB_LENGTH = 5;
 
-	protected LocationManager mLocationManager;
 	protected boolean mIsOn;
-	protected Speed mSpeed;
 	protected Situation mSituation;
 	protected Situation mPrevSit;
 
@@ -33,6 +29,12 @@ public abstract class LocationActivity extends TestActivity {
 	private long mElapsedTime;
 	private int mIndice;
 	private int mTurn = 0;
+	private boolean mShow = false;
+	
+	private TextView mStatusView;
+	private TextView mLatView;
+	private TextView mLongView;
+	private TextView mAccView;
 
 	private class Position {
 		public double latitude;
@@ -55,22 +57,23 @@ public abstract class LocationActivity extends TestActivity {
 		super.onCreate(savedInstanceState);
 		
 		Intent i = getIntent();
-		
-		mIsUpdating = i.getBooleanExtra("isRunning", true);
-				
+		//TODO
+		//mIsUpdating = i.getBooleanExtra("isRunning", true);
+		Log.e(getClass().getName(), "updating = "+i.getBooleanExtra("isRunning", true));
 		setContentView(R.layout.gps_layout);
 		mLocCount = 0;
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		mStatusView = (TextView)findViewById(R.id.gps_status);
+		mLatView = (TextView)findViewById(R.id.gps_lat);
+		mLongView = (TextView)findViewById(R.id.gps_long);
+		mAccView = (TextView)findViewById(R.id.gps_acc);
 		
-		Log.e(getClass().getName(), "updating = "+mIsUpdating);
 	}
 
 	@Override
 	protected void getInfo() {
 		updateElapsedTime();
-		getMean();
-		displayInfos();
+		mShow = true;
 		try {
 			mFileManager.writeDataToFile(getType(), mSituation, mElapsedTime);
 		} catch (IOException e) {
@@ -92,31 +95,33 @@ public abstract class LocationActivity extends TestActivity {
 		//speed in m/s on x and y axis
 		Speed s = new Speed(1000*absSpeed*x/dist, 1000*absSpeed*y/dist, 0);
 		mSituation.setSpeed(s);
+		
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent i;
+		//TODO
 		switch (item.getItemId()) {
 		case R.id.gps_service:
 			i = new Intent(getApplicationContext(), GPSActivity.class);
 			i.putExtra("dirName", mDirName);
 			i.putExtra("dirPath", mDirPath);
-			i.putExtra("isRunning", mIsUpdating);
+			//i.putExtra("isRunning", mIsUpdating);
 			startActivity(i);
 			break;
 		case R.id.network_service:
 			i = new Intent(getApplicationContext(), NetworkActivity.class);
 			i.putExtra("dirName", mDirName);
 			i.putExtra("dirPath", mDirPath);
-			i.putExtra("isRunning", mIsUpdating);
+			//i.putExtra("isRunning", mIsUpdating);
 			startActivity(i);
 			break;
 		case R.id.sensor_service:
 			i = new Intent(getApplicationContext(), SensorActivity.class);
 			i.putExtra("dirName", mDirName);
 			i.putExtra("dirPath", mDirPath);
-			i.putExtra("isRunning", mIsUpdating);
+			//i.putExtra("isRunning", mIsUpdating);
 			startActivity(i);
 			break;
 		}
@@ -131,9 +136,9 @@ public abstract class LocationActivity extends TestActivity {
 
 	@Override
 	protected void onResume() {
-		if (mIsUpdating){
+		//if (mIsUpdating){
 			startUpdates();
-		}
+		//}
 		super.onResume();
 	}
 
@@ -151,23 +156,23 @@ public abstract class LocationActivity extends TestActivity {
 		mTurn = 0;
 		mStartTime = SystemClock.uptimeMillis();
 		mPrevSit = new Situation(GPSData.getInstance().currentSituation);
-		mIsUpdating = true;
+		//TODO
+		//mIsUpdating = true;
 		super.startUpdates();
 	}
 
 	/**
 	 * Displays informations on screen about current values
 	 */
-	private void displayInfos() {
-		mLocCount++;
-		((TextView) findViewById(R.id.gps_status)).setText("Essai n° : "
-				+ mLocCount + ", " + mElapsedTime + "ms écoulées");
-		((TextView) findViewById(R.id.gps_lat)).setText("Latitude : "
-				+ mSituation.getLatitude());
-		((TextView) findViewById(R.id.gps_long)).setText("Longitude : "
-				+ mSituation.getLongitude());
-		((TextView) findViewById(R.id.gps_acc)).setText("Précision : "
-				+ mSituation.getAccuracy());
+	protected void displayInfos() {
+		if (mShow) {
+			mLocCount++;
+			mStatusView.setText("Essai n° : "+ mLocCount + ", " + mElapsedTime + "ms écoulées");
+			mLatView.setText("Latitude : "+ mSituation.getLatitude());
+			mLongView.setText("Longitude : "+ mSituation.getLongitude());
+			mAccView.setText("Précision : "+ mSituation.getAccuracy());
+			mShow = false;
+		}
 	}
 
 	/**
@@ -182,7 +187,7 @@ public abstract class LocationActivity extends TestActivity {
 	/**
 	 * 
 	 */
-	private void getMean() {
+	protected void getMean() {
 		double meanLat = 0;
 		double meanLong = 0;
 		float meanAcc = 0;

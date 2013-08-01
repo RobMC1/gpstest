@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.provider.Settings.Secure;
 import android.provider.Settings.SettingNotFoundException;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -32,7 +31,6 @@ public abstract class TestActivity extends Activity {
 	protected FileManager mFileManager;
 	protected String mDirName;
 	protected String mDirPath;
-	protected boolean mIsUpdating;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +50,14 @@ public abstract class TestActivity extends Activity {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onPrepareOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.loc_menu, menu);
-		if (!mIsUpdating){
+		//TODO
+		//if (!mIsUpdating){
 			menu.findItem(R.id.stop_service).setIcon(android.R.drawable.ic_media_play);
-		}else{
-			menu.findItem(R.id.stop_service).setIcon(android.R.drawable.ic_media_pause);
-		}
+		//}else{
+			//menu.findItem(R.id.stop_service).setIcon(android.R.drawable.ic_media_pause);
+		//}
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -84,14 +83,14 @@ public abstract class TestActivity extends Activity {
 			
 			break;
 		case R.id.stop_service:
-			if (mIsUpdating){
-				stopUpdates();
-				item.setIcon(android.R.drawable.ic_media_play);
-			}else{
+			//if (mIsUpdating){
+				//stopUpdates();
+				//item.setIcon(android.R.drawable.ic_media_play);
+			//}else{
 				startUpdates();
 				item.setIcon(android.R.drawable.ic_media_pause);
-			}
-			mIsUpdating = !mIsUpdating;
+			//}
+			//mIsUpdating = !mIsUpdating;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -115,17 +114,17 @@ public abstract class TestActivity extends Activity {
 	
 	@Override
 	protected void onResume() {
-		if (mIsUpdating) {
+		//if (mIsUpdating) {
 			startUpdates();
-		}
+		//}
 		super.onResume();
 	}
 	
 	@Override
 	protected void onPause() {
-		if (mIsUpdating) {
+		//if (mIsUpdating) {
 			stopUpdates();
-		}
+		//}
 		super.onPause();
 	}
 	
