@@ -17,6 +17,20 @@ import com.makina.gpsdata.utils.FileManager;
 import com.makina.gpsdata.utils.Situation;
 import com.makina.gpsdata.utils.Speed;
 
+
+/**
+ * 
+ * ***** WARNING *****
+ * * NOT WORKING YET *
+ * *******************
+ * 
+ * This activity allows to locate the phone using a start position and a start speed given by either the GPSActivity or the NetworkActivity, and from then only uses the phone accelerometer, magnetic field sensor and the gravity sensor to find the current position.
+ * 
+ * Approximations : No difference is made between magnetic north and geographic north and the earth is considered as perfectly round.
+ * 
+ * @author guillaume
+ *
+ */
 public class SensorActivity extends LocationActivity implements SensorEventListener {
 	
 	private Sensor mSensor;
@@ -90,7 +104,7 @@ public class SensorActivity extends LocationActivity implements SensorEventListe
 	
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		
+
 	}
 	
 	@Override
@@ -105,10 +119,18 @@ public class SensorActivity extends LocationActivity implements SensorEventListe
 		super.getInfo();
 	}
 	
+	/**
+	 * 
+	 * @return bearing from magnetic north direction
+	 */
 	private double getBearing() {
 		return Math.atan(mAcceleration[0]/mAcceleration[1])-(Math.PI/2);
 	}
 	
+	/**
+	 * 
+	 * @return absolute distance between the previous recorded location and the current location
+	 */
 	private double getDist() {
 		Speed s = new Speed(mPrevSit.getSpeed().getX()+mAcceleration[0], mPrevSit.getSpeed().getY()+mAcceleration[1], 0);
 		double dist = Math.sqrt(Math.pow(s.getX(), 2)+Math.pow(s.getY(), 2));
@@ -175,6 +197,9 @@ public class SensorActivity extends LocationActivity implements SensorEventListe
 		}
 	}
 	
+	/**
+	 * Computes the mean acceleration during the last second on the x, y and z axis
+	 */
 	private void computeMeanAcc(){
 		mAcceleration[0] = 0;
 		mAcceleration[1] = 1;
@@ -190,6 +215,11 @@ public class SensorActivity extends LocationActivity implements SensorEventListe
 		mAccRefTvals.clear();
 	}
 	
+	/**
+	 * 
+	 * @param brng : bearing from the magnetic north direction
+	 * @param d : absolute distance from the last recorded location 
+	 */
 	private void computePosition (double brng, double d){
 		double dist = d/6371000.0;
 		double lat1 = Math.toRadians(mPrevSit.getLatitude());

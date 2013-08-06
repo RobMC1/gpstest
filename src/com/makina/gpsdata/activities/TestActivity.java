@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.makina.gpsdata.R;
+import com.makina.gpsdata.application.GPSData;
 import com.makina.gpsdata.utils.FileManager;
 
 /**
@@ -65,6 +66,7 @@ public abstract class TestActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
+			stopUpdates();
 			Intent i = new Intent(this, MainActivity.class);
 			startActivity(i);
 			break;
@@ -83,16 +85,16 @@ public abstract class TestActivity extends Activity {
 			
 			break;
 		case R.id.stop_service:
-			//if (mIsUpdating){
-				//stopUpdates();
-				//item.setIcon(android.R.drawable.ic_media_play);
-			//}else{
+			if (GPSData.getInstance().currentlyRunning){
+				stopUpdates();
+				GPSData.getInstance().currentlyRunning = false;
+			}else{
 				startUpdates();
-				item.setIcon(android.R.drawable.ic_media_pause);
-			//}
-			//mIsUpdating = !mIsUpdating;
+				GPSData.getInstance().currentlyRunning = true;
+			}
+			break;
 		}
-		return super.onOptionsItemSelected(item);
+		return super.onOptionsItemSelected(item); 
 	}
 
 	/**
