@@ -17,6 +17,7 @@ import com.makina.gpsdata.utils.FileManager;
 
 
 /**
+ * This activity should run fine
  * Display the acceleration applied to the phone in the terrestrial reference
  * 
  * @author guillaume

@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.makina.gpsdata.R;
-import com.makina.gpsdata.application.GPSData;
 import com.makina.gpsdata.utils.FileManager;
 
 /**
@@ -32,6 +31,7 @@ public abstract class TestActivity extends Activity {
 	protected FileManager mFileManager;
 	protected String mDirName;
 	protected String mDirPath;
+	protected boolean mIsUpdating;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,18 +47,17 @@ public abstract class TestActivity extends Activity {
 					.show();
 			e.printStackTrace();
 		}
-		
+		 mIsUpdating = false;
 	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.loc_menu, menu);
-		//TODO
-		//if (!mIsUpdating){
+		if (!mIsUpdating){
 			menu.findItem(R.id.stop_service).setIcon(android.R.drawable.ic_media_play);
-		//}else{
-			//menu.findItem(R.id.stop_service).setIcon(android.R.drawable.ic_media_pause);
-		//}
+		}else{
+			menu.findItem(R.id.stop_service).setIcon(android.R.drawable.ic_media_pause);
+		}
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -85,12 +84,12 @@ public abstract class TestActivity extends Activity {
 			
 			break;
 		case R.id.stop_service:
-			if (GPSData.getInstance().currentlyRunning){
+			if (mIsUpdating){
 				stopUpdates();
-				GPSData.getInstance().currentlyRunning = false;
+				mIsUpdating = false;
 			}else{
 				startUpdates();
-				GPSData.getInstance().currentlyRunning = true;
+				mIsUpdating = true;
 			}
 			break;
 		}
@@ -116,17 +115,17 @@ public abstract class TestActivity extends Activity {
 	
 	@Override
 	protected void onResume() {
-		//if (mIsUpdating) {
+		if (mIsUpdating) {
 			startUpdates();
-		//}
+		}
 		super.onResume();
 	}
 	
 	@Override
 	protected void onPause() {
-		//if (mIsUpdating) {
+		if (mIsUpdating) {
 			stopUpdates();
-		//}
+		}
 		super.onPause();
 	}
 	

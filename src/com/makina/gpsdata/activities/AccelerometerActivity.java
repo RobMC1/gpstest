@@ -14,7 +14,8 @@ import com.makina.gpsdata.R;
 import com.makina.gpsdata.utils.FileManager;
 
 /**
- * This class returns the values given by the device's accelerometer and log them to a file
+ * This activity should run fine
+ * It returns the values given by the device's accelerometer and log them to a file.
  * 
  * @author Guillaume Salmon
  *

@@ -14,12 +14,14 @@ import com.makina.gpsdata.R;
 import com.makina.gpsdata.utils.FileManager;
 
 /**
-* This class returns the values given by the device's gyroscope and log them to a file
+* This activity should run fine
+* it returns the values given by the device's gyroscope and log them to a file
 * 
 * @author Guillaume Salmon
 *
 */
 public class GyroActivity extends TestSensorActivity implements SensorEventListener{
+	
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
 	private int mCount;
@@ -38,11 +40,6 @@ public class GyroActivity extends TestSensorActivity implements SensorEventListe
 		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 		
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
 	}
 
 	@Override

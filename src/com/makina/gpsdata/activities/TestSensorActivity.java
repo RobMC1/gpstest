@@ -5,15 +5,13 @@ import java.util.TimerTask;
 
 import android.os.Bundle;
 
-public class TestSensorActivity extends TestActivity {
+public abstract class TestSensorActivity extends TestActivity {
 	
 	private Timer mTimer;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//TODO
-		//mIsUpdating = false;
 	}
 
 	@Override
@@ -29,18 +27,6 @@ public class TestSensorActivity extends TestActivity {
 		mTimer.scheduleAtFixedRate(updateInfo, 1000, 1000);
 		
 		super.startUpdates();
-	}
-
-	@Override
-	protected void getInfo() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected int getType() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 	
 	/**

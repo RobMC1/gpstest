@@ -8,7 +8,6 @@ public class GPSData extends Application {
 	
 	private static GPSData singleton = null;
 	public Situation currentSituation;
-	public boolean currentlyRunning;
 
     public static GPSData getInstance() {
         return singleton;
@@ -17,9 +16,7 @@ public class GPSData extends Application {
 	@Override
 	public void onCreate() {
 		currentSituation = new Situation();
-		currentlyRunning = false;
 		singleton = this;
-		//PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		super.onCreate();
 	}
 	
