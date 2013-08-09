@@ -9,6 +9,7 @@ import android.os.SystemClock;
  * @author Guillaume Salmon
  *
  */
+//TODO Using Location instead of this could be a great idea, but without a provider, I cannot instantiate it
 
 public class Situation {
 	private double mLatitude;

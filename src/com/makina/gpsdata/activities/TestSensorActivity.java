@@ -5,6 +5,12 @@ import java.util.TimerTask;
 
 import android.os.Bundle;
 
+/**
+ * Starts and then schedules updates for sensor based activities.
+ * 
+ * @author Guillaume Salmon
+ *
+ */
 public abstract class TestSensorActivity extends TestActivity {
 	
 	private Timer mTimer;

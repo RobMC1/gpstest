@@ -12,7 +12,6 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import com.makina.gpsdata.R;
-import com.makina.gpsdata.application.GPSData;
 import com.makina.gpsdata.utils.FileManager;
 import com.makina.gpsdata.utils.Situation;
 import com.makina.gpsdata.utils.Speed;
@@ -109,13 +108,21 @@ public class SensorActivity extends LocationActivity implements SensorEventListe
 	
 	@Override
 	protected void getInfo() {
-		mPrevSit = new Situation(GPSData.getInstance().currentSituation);
+		
+		// TODO We should retrieve the last know location using
+		// GPSData.getInstance().currentSituation then save
+		// the new one in case we switch to another activity later
+				
+		// mPrevSit = new Situation(GPSData.getInstance().currentSituation);
+
 		mSituation = new Situation();
 		computeMeanAcc();
 		double dist = getDist();
 		double bearing = getBearing();
 		computePosition(bearing, dist);
-		GPSData.getInstance().currentSituation = new Situation(mSituation);
+		
+		// GPSData.getInstance().currentSituation = new Situation(mSituation);
+		
 		super.getInfo();
 	}
 	

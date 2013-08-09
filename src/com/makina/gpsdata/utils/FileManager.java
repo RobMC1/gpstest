@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Calendar;
 
 /**
+ * This class works fine
  * Handles all the data formatting and writing to files.
  * 
  * @author Guillaume Salmon
@@ -114,10 +115,11 @@ public class FileManager {
 	}
 
 	/**
-	 * Writes location data to file for gps and network location
+	 * Writes location data to file
 	 * 
-	 * @param type
-	 * @param loc
+	 * @param type is the type of activity that returns the values
+	 * @param loc is the current location information
+	 * @param elapsedTime is the time elapsed since the last location was acquired
 	 * @return true if everything ran normally, false otherwise
 	 * @throws IOException
 	 */
@@ -241,6 +243,17 @@ public class FileManager {
 		return true;
 	}
 
+	/**
+	 * Writes mean location data to file
+	 * 
+	 * @param type is the type of activity that returns the values
+	 * @param meanLat is the current mean latitude
+	 * @param meanLong is the current mean longitude
+	 * @param meanAcc is the current mean accuracy
+	 * @param isValid is true if the last location acquired is valid, false otherwise
+	 * @return true if everything ran normally, false otherwise
+	 * @throws IOException
+	 */
 	public boolean writeDataToFile(int type, double meanLat, double meanLong,
 			float meanAcc, boolean isValid) throws IOException {
 		FileWriter fileWritter;
@@ -319,7 +332,7 @@ public class FileManager {
 	}
 
 	/**
-	 * Makes the data understandable before to write it on the file
+	 * Makes location data understandable before to write it on the file
 	 * 
 	 * @param loc
 	 * @return formatted data in a String
@@ -334,7 +347,7 @@ public class FileManager {
 	}
 
 	/**
-	 * Makes the data understandable before to write it on the file
+	 * Makes sensors data understandable before to write it on the file
 	 * 
 	 * @param valeurs
 	 * @return formatted data in a String
@@ -350,7 +363,7 @@ public class FileManager {
 	}
 
 	/**
-	 * Makes the data understandable before to write it on the file
+	 * Makes general data understandable before to write it on the file
 	 * 
 	 * @param valeurs
 	 * @return formatted data in a String

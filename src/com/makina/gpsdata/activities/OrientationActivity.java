@@ -3,6 +3,7 @@ package com.makina.gpsdata.activities;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -69,15 +70,19 @@ public class OrientationActivity extends TestSensorActivity implements SensorEve
 		float y = 0;
 		float z = 0;
 		
-		for (float [] val : mAccRefTvals){
+		ListIterator<float[]> iter = mAccRefTvals.listIterator();
+		int size = mAccRefTvals.size();
+		
+		while (iter.hasNext()){
+			float [] val = iter.next();
 			x = x + val[0];
 			y = y + val[1];
 			z = z + val[2];
 		}
 		
-		x = x/mAccRefTvals.size();
-		y = y/mAccRefTvals.size();
-		z = z/mAccRefTvals.size();
+		x = x/size;
+		y = y/size;
+		z = z/size;
 		
 		
 		// Write the values on the file

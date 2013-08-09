@@ -7,7 +7,9 @@ import com.makina.gpsdata.utils.Situation;
 public class GPSData extends Application {
 	
 	private static GPSData singleton = null;
-	public Situation currentSituation;
+	
+	//TODO should hold the last known location of the device
+	public Situation currentSituation; 
 
     public static GPSData getInstance() {
         return singleton;

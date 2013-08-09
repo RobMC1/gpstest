@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.makina.gpsdata.R;
-import com.makina.gpsdata.application.GPSData;
 import com.makina.gpsdata.utils.FileManager;
 import com.makina.gpsdata.utils.Situation;
 
@@ -18,24 +17,26 @@ import com.makina.gpsdata.utils.Situation;
  * This class returns the location given by the network and log it to a file
  * 
  * @author Guillaume Salmon
- *
+ * 
  */
-public class NetworkActivity extends LocationActivity implements LocationListener {	
+public class NetworkActivity extends LocationActivity implements
+		LocationListener {
 	protected LocationManager mLocationManager;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		List<String> providers = mLocationManager.getProviders(true);
-		for (String provider : providers){
+		for (String provider : providers) {
 			if (provider.equalsIgnoreCase(LocationManager.NETWORK_PROVIDER)) {
-	            mIsOn = true;
-	        }
+				mIsOn = true;
+			}
 		}
 
 	}
+
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -48,13 +49,20 @@ public class NetworkActivity extends LocationActivity implements LocationListene
 
 	@Override
 	public void onLocationChanged(Location location) {
-		mPrevSit = new Situation(GPSData.getInstance().currentSituation);
+
+		// TODO We should retrieve the last know location using
+		// GPSData.getInstance().currentSituation then save
+		// the new one in case we switch to another activity later
+
+		// mPrevSit = new Situation(GPSData.getInstance().currentSituation);
+
 		mSituation = new Situation(location);
-		computeSpeed();
+		//computeSpeed();
 		getMean();
 		getInfo();
 		displayInfos();
-		GPSData.getInstance().currentSituation = new Situation(mSituation);
+
+		// GPSData.getInstance().currentSituation = new Situation(mSituation);
 	}
 
 	@Override
@@ -75,18 +83,19 @@ public class NetworkActivity extends LocationActivity implements LocationListene
 		super.stopUpdates();
 		mLocationManager.removeUpdates(this);
 	}
-	
+
 	@Override
 	protected void startUpdates() {
 		super.startUpdates();
-		if (mIsOn){
-			mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+		if (mIsOn) {
+			mLocationManager.requestLocationUpdates(
+					LocationManager.NETWORK_PROVIDER, 0, 0, this);
 			((TextView) findViewById(R.id.gps_status)).setText("Network on");
-		}else{
+		} else {
 			((TextView) findViewById(R.id.gps_status)).setText("Network off");
 		}
 	}
-	
+
 	@Override
 	protected int getType() {
 		return FileManager.NETWORK_TYPE;
