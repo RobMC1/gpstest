@@ -52,3 +52,4 @@ Test Orientation :
  - Stores regularly current time, mean values in x, y and z, the amount of values used to compute the mean values and the power consumption in mA (but I'm not confident in this one).
 
 
+"Test GPS.pdf" contains a lot of informations to complete this work, everything I could not complete in the application is explained there. Just take a look (in french).
